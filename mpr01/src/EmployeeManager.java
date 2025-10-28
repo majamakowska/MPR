@@ -5,10 +5,9 @@ public class EmployeeManager {
     private final Set<Employee> employees = new HashSet<>();
 
     public void addEmployee(Employee employee) {
-        if (employees.contains(employee)) {
-            System.out.println("Email powtarza się. Nie można dodać pracownika :(");
+        if (!employees.add(employee)) {
+            throw new IllegalArgumentException("Email powtarza się. Nie można dodać pracownika: " + employee);
         }
-        employees.add(employee);
     }
 
     public List<Employee> getAllEmployees() {

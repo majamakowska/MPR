@@ -8,6 +8,10 @@ public class Employee {
     private double salary;
 
     public Employee(String fullName, String email, String companyName, Position position, double salary) {
+        if (salary < 0) {
+            throw new IllegalArgumentException("Pensja nie może być ujemna. Nie można dodać pracownika: "
+                    + Employee.toString(fullName, email, companyName, position, salary));
+        }
         this.fullName = fullName;
         this.email = email;
         this.companyName = companyName;
@@ -60,4 +64,9 @@ public class Employee {
     public String toString() {
         return '(' + fullName + ", " + email + ", " + companyName + ", " + position + ", " + salary + ')';
     }
+
+    public static String toString(String fullName, String email, String companyName, Position position, double salary) {
+        return '(' + fullName + ", " + email + ", " + companyName + ", " + position + ", " + salary + ')';
+    }
+
 }
