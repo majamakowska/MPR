@@ -9,22 +9,24 @@ public class Employee {
 
     public Employee(String fullName, String email, String companyName, Position position, double salary) {
         if (salary < 0) {
-            throw new IllegalArgumentException("Pensja nie może być ujemna. Nie można dodać pracownika: "
-                    + Employee.toString(fullName, email, companyName, position, salary));
+            throw new IllegalArgumentException("Pensja nie może być ujemna. "
+                    + cannotAddMessage(fullName, email, companyName, position, salary));
         }
-        this.fullName = fullName;
-        this.email = email;
-        this.companyName = companyName;
-        this.position = position;
+        try {
+            this.fullName = validateStringData(fullName, "'imię i nazwisko'");
+            this.email = validateStringData(email, "'email'");
+            this.companyName = validateStringData(companyName, "'nazwa firmy'");
+            this.position = ensureNotNullPosition(position);
+        } catch(IllegalArgumentException e) {
+            throw new IllegalArgumentException(e.getMessage()
+                    + cannotAddMessage(fullName, email, companyName, position, salary));
+        }
         this.salary = salary;
     }
 
     public Employee(String fullName, String email, String companyName, Position position) {
-        this.fullName = fullName;
-        this.email = email;
-        this.companyName = companyName;
-        this.position = position;
-        this.salary = position.getBaseSalary();
+        this(fullName, email, companyName, position,
+                (position == null ? 0 : position.getBaseSalary()));
     }
 
     public String getFullName() {
@@ -69,4 +71,26 @@ public class Employee {
         return '(' + fullName + ", " + email + ", " + companyName + ", " + position + ", " + salary + ')';
     }
 
+    private String validateStringData(String toValidate, String stringName) {
+        stringName = (stringName == null) ? "" : stringName.trim().toLowerCase() + " ";
+        if (toValidate == null) {
+            throw new IllegalArgumentException("Wartość " + stringName + "nie może być null. ");
+        }
+        String validated = toValidate.trim();
+        if (validated.isEmpty()) {
+            throw new IllegalArgumentException("Pole " + stringName + "nie może być puste. ");
+        }
+        return validated;
+    }
+
+    private static Position ensureNotNullPosition(Position position) {
+        if (position == null) {
+            throw new IllegalArgumentException("Stanowisko nie może być null. ");
+        }
+        return position;
+    }
+
+    private String cannotAddMessage(String fullName, String email, String companyName, Position position, double salary) {
+        return "Nie można dodać pracownika: " + Employee.toString(fullName, email, companyName, position, salary);
+    }
 }

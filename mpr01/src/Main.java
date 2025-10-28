@@ -11,7 +11,8 @@ public class Main {
                 {"Jessica Kiełbasa", "goldenlabubu@google.com", "Google", Position.PROGRAMISTA, 9000.0},
                 {"Daniel Silva", "danielsilva1904@riotgames.com", "Riot Games", Position.MANAGER, 30000.0},
                 {"Janusz Kowalski", "janusz.kowalski@klimawent.pl", "Klimawent", Position.PREZES, 25000.0},
-                {"Jan Biedak", "jan.biednak@wp.pl", "Klimawent", Position.PROGRAMISTA, -21.37}
+                {"Jan Biedak", "jan.biednak@wp.pl", "Klimawent", Position.PROGRAMISTA, -21.37},
+                {"", "", "", null, null}
         };
 
         List<String> errors = new ArrayList<>();
