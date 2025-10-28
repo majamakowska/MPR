@@ -1,36 +1,38 @@
 import java.util.Objects;
 
 public class Employee {
-    private String fullName;
+    private String firstName;
+    private String lastName;
     private String email;
     private String companyName;
     private Position position;
     private double salary;
 
-    public Employee(String fullName, String email, String companyName, Position position, double salary) {
+    public Employee(String firstName, String lastName, String email, String companyName, Position position, double salary) {
         if (salary < 0) {
             throw new IllegalArgumentException("Pensja nie może być ujemna. "
-                    + cannotAddMessage(fullName, email, companyName, position, salary));
+                    + cannotAddMessage(firstName, lastName, email, companyName, position, salary));
         }
         try {
-            this.fullName = validateStringData(fullName, "'imię i nazwisko'");
+            this.firstName = capitalizeNames(validateStringData(firstName, "'imię'"));
+            this.lastName = capitalizeNames(validateStringData(lastName, "'nazwisko'"));
             this.email = validateStringData(email, "'email'");
-            this.companyName = validateStringData(companyName, "'nazwa firmy'");
+            this.companyName = capitalizeNames(validateStringData(companyName, "'nazwa firmy'"));
             this.position = ensureNotNullPosition(position);
         } catch(IllegalArgumentException e) {
             throw new IllegalArgumentException(e.getMessage()
-                    + cannotAddMessage(fullName, email, companyName, position, salary));
+                    + cannotAddMessage(firstName, lastName, email, companyName, position, salary));
         }
         this.salary = salary;
     }
 
-    public Employee(String fullName, String email, String companyName, Position position) {
-        this(fullName, email, companyName, position,
+    public Employee(String firstName, String lastName, String email, String companyName, Position position) {
+        this(firstName, lastName, email, companyName, position,
                 (position == null ? 0 : position.getBaseSalary()));
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getLastName() {
+        return lastName;
     }
 
     public String getEmail() {
@@ -64,11 +66,11 @@ public class Employee {
 
     @Override
     public String toString() {
-        return '(' + fullName + ", " + email + ", " + companyName + ", " + position + ", " + salary + ')';
+        return '(' + firstName + " " + lastName + ", " + email + ", " + companyName + ", " + position + ", " + salary + ')';
     }
 
-    public static String toString(String fullName, String email, String companyName, Position position, double salary) {
-        return '(' + fullName + ", " + email + ", " + companyName + ", " + position + ", " + salary + ')';
+    public static String toString(String firstName, String lastName, String email, String companyName, Position position, double salary) {
+        return '(' + firstName + " " + lastName + ", " + email + ", " + companyName + ", " + position + ", " + salary + ')';
     }
 
     private String validateStringData(String toValidate, String stringName) {
@@ -83,6 +85,17 @@ public class Employee {
         return validated;
     }
 
+    private String capitalizeNames(String toCapitalize) {
+        String[] names = toCapitalize.split("\\s+");
+        StringBuilder capitalized = new StringBuilder();
+        for (String name : names) {
+            if (!name.isEmpty()) {
+                capitalized.append(name.substring(0, 1).toUpperCase()).append(name.substring(1).toLowerCase()).append(" ");
+            }
+        }
+        return capitalized.toString().trim();
+    }
+
     private static Position ensureNotNullPosition(Position position) {
         if (position == null) {
             throw new IllegalArgumentException("Stanowisko nie może być null. ");
@@ -90,7 +103,7 @@ public class Employee {
         return position;
     }
 
-    private String cannotAddMessage(String fullName, String email, String companyName, Position position, double salary) {
-        return "Nie można dodać pracownika: " + Employee.toString(fullName, email, companyName, position, salary);
+    private String cannotAddMessage(String firstName, String lastName, String email, String companyName, Position position, double salary) {
+        return "Nie można dodać pracownika: " + Employee.toString(firstName, lastName, email, companyName, position, salary);
     }
 }

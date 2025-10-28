@@ -6,13 +6,13 @@ public class Main {
         EmployeeManager manager = new EmployeeManager();
 
         Object[][] employeeData = {
-                {"Tomasz Problem", "tomasz@gmail.com", "Klimawent", Position.MANAGER, null},
-                {"Tomasz Zapasowy", "tomasz@gmail.com", "Allegro", Position.PROGRAMISTA, null},
-                {"Jessica Kiełbasa", "goldenlabubu@google.com", "Google", Position.PROGRAMISTA, 9000.0},
-                {"Daniel Silva", "danielsilva1904@riotgames.com", "Riot Games", Position.MANAGER, 30000.0},
-                {"Janusz Kowalski", "janusz.kowalski@klimawent.pl", "Klimawent", Position.PREZES, 25000.0},
-                {"Jan Biedak", "jan.biednak@wp.pl", "Klimawent", Position.PROGRAMISTA, -21.37},
-                {"", "", "", null, null}
+                {"Tomasz", "Problem", "tomasz@gmail.com", "Klimawent", Position.MANAGER, null},
+                {"Tomasz", "Zapasowy", "tomasz@gmail.com", "Allegro", Position.PROGRAMISTA, null},
+                {"Jessica", "Kiełbasa", "goldenlabubu@google.com", "Google", Position.PROGRAMISTA, 9000.0},
+                {"daniel alexandre", "silva", "danielsilva1904@riotgames.com", "Riot Games", Position.MANAGER, 30000.0},
+                {"Janusz", "Kowalski", "janusz.kowalski@klimawent.pl", "Klimawent", Position.PREZES, 25000.0},
+                {"Jan", "Biedak", "jan.biednak@wp.pl", "Klimawent", Position.PROGRAMISTA, -21.37},
+                {"", "", "", "", null, null}
         };
 
         List<String> errors = new ArrayList<>();
@@ -20,10 +20,10 @@ public class Main {
         for (Object[] data : employeeData) {
             try {
                 Employee e;
-                if (data[4] == null) {
-                    e = new Employee((String)data[0], (String)data[1], (String)data[2], (Position) data[3]);
+                if (data[5] == null) {
+                    e = new Employee((String)data[0], (String)data[1], (String)data[2], (String)data[3], (Position)data[4]);
                 } else {
-                    e = new Employee((String)data[0], (String)data[1], (String)data[2], (Position)data[3], (Double)data[4]);
+                    e = new Employee((String)data[0], (String)data[1], (String)data[2], (String)data[3], (Position)data[4], (Double)data[5]);
                 }
                 manager.addEmployee(e);
             } catch (Exception ex) {

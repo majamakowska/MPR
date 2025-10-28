@@ -20,8 +20,7 @@ public class EmployeeManager {
     }
 
     public List<Employee> sortByLastName() {
-        return employees.stream()
-                .sorted(Comparator.comparing(e -> e.getFullName().split(" ")[1])).toList();
+        return employees.stream().sorted(Comparator.comparing(e -> e.getLastName())).toList();
     }
 
     public Map<Position, List<Employee>> groupByPosition() {
