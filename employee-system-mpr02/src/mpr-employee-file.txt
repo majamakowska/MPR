@@ -1,0 +1,9 @@
+firstName,lastName,email,companyName,position,salary
+Tomasz,Problem,tomasz@gmail.com,Klimawent,MANAGER,null,
+Tomasz,Zapasowy,tomasz@gmail.com,Allegro,PROGRAMISTA,null,
+Jessica,Kiełbasa,goldenlabubu@google.com,Google,PROGRAMISTA,9000.0,
+daniel alexandre,silva,danielsilva1904@riotgames.com,RiotGames,MANAGER,30000.0,
+Janusz,Kowalski,janusz.kowalski@klimawent.pl,Klimawent,PREZES,25000.0,
+Jan,Biedak,jan.biednak@wp.pl,Klimawent,PROGRAMISTA,-21.37,
+,,,,null,null
+

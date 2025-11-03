@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- Wersja modelu POM - zawsze 4.0.0 dla współczesnych projektów -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Współrzędne Maven - unikalny identyfikator projektu -->
+    <groupId>com.example</groupId>
+    <artifactId>file-format-example</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <!-- Metadane projektu -->
+    <name>File Format Example</name>
+    <description>Przykładowy projekt demonstrujący obsługę CSV, JSON i REST API</description>
+
+    <!-- Właściwości projektu - zmienne używane w całym POM -->
+    <properties>
+        <!-- Wersja Javy dla kompilacji -->
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <!-- Kodowanie plików źródłowych -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <!-- Zależności projektu - biblioteki potrzebne do działania aplikacji -->
+    <dependencies>
+        <!-- Biblioteka Gson do obsługi JSON -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
+        <!-- Biblioteka OpenCSV do parsowania plików CSV -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.8</version>
+        </dependency>
+    </dependencies>
+
+    <!-- Konfiguracja procesu budowania -->
+    <build>
+        <plugins>
+            <!-- Plugin do kompilacji kodu Java -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>16</source>
+                    <target>16</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
