@@ -11,6 +11,18 @@ public class CompanyStatistics {
         this.topEarnerFullName = topEarnerFullName;
     }
 
+    public int getEmployeeCount() {
+        return employeeCount;
+    }
+
+    public double getAverageSalary() {
+        return averageSalary;
+    }
+
+    public String getTopEarnerFullName() {
+        return topEarnerFullName;
+    }
+
     @Override
     public String toString() {
         return String.format("Liczba pracowników: " + employeeCount  + ", Średnie wynagrodzenie: " + averageSalary

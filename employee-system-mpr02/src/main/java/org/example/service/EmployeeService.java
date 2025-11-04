@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class EmployeeService {
-    private final List<Employee> employees = new ArrayList<>();
+    private final Set<Employee> employees = new HashSet<>();
 
     public void addEmployee(Employee employee) {
         if (!employees.add(employee)) {
@@ -14,7 +14,7 @@ public class EmployeeService {
     }
 
     public List<Employee> getAllEmployees() {
-        return employees;
+        return new ArrayList<>(employees);
     }
 
     public List<Employee> findByCompany(String company) {
@@ -35,7 +35,7 @@ public class EmployeeService {
     }
 
     public double averageSalary() {
-        return averageSalary(employees);
+        return averageSalary(new ArrayList<>(employees));
     }
 
     public double averageSalary(List <Employee> employees) {
@@ -43,7 +43,7 @@ public class EmployeeService {
     }
 
     public Optional<Employee> highestSalaryEmployee() {
-        return highestSalaryEmployee(employees);
+        return highestSalaryEmployee(new ArrayList<>(employees));
     }
 
     public Optional<Employee> highestSalaryEmployee(List <Employee> employees) {
