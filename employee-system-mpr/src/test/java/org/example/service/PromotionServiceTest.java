@@ -51,4 +51,14 @@ class PromotionServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Nie można awansować");
     }
+
+    @Test
+    void shouldRaiseSalary() {
+        PromotionService promotionService = new PromotionService();
+        Employee employee = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+
+        promotionService.giveRaise(employee, 10.0);
+
+        assertThat(employee.getSalary()).isEqualTo(Position.PROGRAMISTA.getBaseSalary() * 1.1);
+    }
 }
