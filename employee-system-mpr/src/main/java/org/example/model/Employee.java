@@ -61,6 +61,10 @@ public class Employee {
         return salary;
     }
 
+    public void setPosition(Position position) {
+        this.position =  position;
+    }
+
     public void setSalary(double salary) {
         this.salary = salary;
     }
