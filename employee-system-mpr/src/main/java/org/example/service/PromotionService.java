@@ -7,7 +7,21 @@ public class PromotionService {
     public PromotionService() {}
 
     public void promote(Employee employee, Position newPosition) {
+        if (employee.getPosition() == newPosition) {
+            throw new IllegalArgumentException(
+                    "Pracownik już ma stanowisko " + newPosition);
+        }
+        if (!canPromote(employee.getPosition(), newPosition)) {
+            throw new IllegalArgumentException(
+                    "Nie można awansować z " + employee.getPosition() + " na " + newPosition);
+        }
+
         employee.setPosition(newPosition);
         employee.setSalary(newPosition.getBaseSalary());
     }
+
+    private boolean canPromote(Position currentPosition, Position newPosition) {
+        return newPosition.ordinal() < currentPosition.ordinal();
+    }
+
 }

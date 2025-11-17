@@ -4,6 +4,7 @@ import org.example.model.Employee;
 import org.example.model.Position;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,5 +30,25 @@ class PromotionServiceTest {
 
         promotionService.promote(employee, Position.MANAGER);
         assertThat(employee.getSalary(), is(equalTo(12000.00)));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPromotingToSamePosition() {
+        PromotionService promotionService = new PromotionService();
+        Employee employee = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.MANAGER);
+
+        assertThatThrownBy(() -> promotionService.promote(employee, Position.MANAGER))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Pracownik już ma stanowisko");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenDemotingEmployee() {
+        PromotionService promotionService = new PromotionService();
+        Employee employee = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.MANAGER);
+
+        assertThatThrownBy(() -> promotionService.promote(employee, Position.PROGRAMISTA))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Nie można awansować");
     }
 }
