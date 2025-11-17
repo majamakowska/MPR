@@ -25,6 +25,23 @@ public class PromotionService {
     }
 
     public void giveRaise(Employee employee, double percent) {
-        employee.setSalary(employee.getSalary() * (1 + percent/100));
+        if (percent < 0) {
+            throw new IllegalArgumentException("Procent podwyżki nie może być ujemny");
+        }
+        if (percent == 0) {
+            throw new IllegalArgumentException("Procent podwyżki nie może być 0");
+        }
+        double newSalary = employee.getSalary() * (1 + percent / 100);
+        newSalary = Math.round(newSalary * 100.0) / 100.0;
+
+
+        Position employeePosition = employee.getPosition();
+        if (employeePosition != Position.PREZES) {
+            double maxSalary = Position.values()[employeePosition.ordinal() - 1].getBaseSalary();
+            if (newSalary >= maxSalary) {
+                throw new IllegalArgumentException("Pensja przekracza limit dla stanowiska " + employeePosition);
+            }
+        }
+        employee.setSalary(newSalary);
     }
 }

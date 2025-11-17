@@ -4,6 +4,9 @@ import org.example.model.Employee;
 import org.example.model.Position;
 import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
@@ -61,4 +64,36 @@ class PromotionServiceTest {
 
         assertThat(employee.getSalary()).isEqualTo(Position.PROGRAMISTA.getBaseSalary() * 1.1);
     }
+
+    @Test
+    void shouldThrowExceptionWhenRaisePercentageBelowZero() {
+        PromotionService promotionService = new PromotionService();
+        Employee employee = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+
+        assertThatThrownBy(() -> promotionService.giveRaise(employee, -15))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Procent podwyżki nie może być ujemny");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenRaisePercentageIsZero() {
+        PromotionService promotionService = new PromotionService();
+        Employee employee = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+
+        assertThatThrownBy(() -> promotionService.giveRaise(employee, 0))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Procent podwyżki nie może być 0");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenRaiseIsOverLimit() {
+        PromotionService promotionService = new PromotionService();
+        Employee employee = new Employee("Anna", "Nowak",
+                "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+
+        assertThatThrownBy(() -> promotionService.giveRaise(employee, 100))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Pensja przekracza limit dla stanowiska");
+    }
+
 }
