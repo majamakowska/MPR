@@ -8,5 +8,6 @@ public class PromotionService {
 
     public void promote(Employee employee, Position newPosition) {
         employee.setPosition(newPosition);
+        employee.setSalary(newPosition.getBaseSalary());
     }
 }
