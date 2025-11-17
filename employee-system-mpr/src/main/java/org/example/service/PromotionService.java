@@ -24,4 +24,7 @@ public class PromotionService {
         return newPosition.ordinal() < currentPosition.ordinal();
     }
 
+    public void giveRaise(Employee employee, double percent) {
+        employee.setSalary(employee.getSalary() * (1 + percent/100));
+    }
 }
