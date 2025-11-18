@@ -6,10 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.*;
+
 public class EmployeeRatingServiceTest {
     @Test
     void shouldAddRatingForEmployee() {
-        ratingService employeeRatingService = new EmployeeRatingService();
+        EmployeeRatingService ratingService = new EmployeeRatingService();
         Employee employee = new Employee("Anna", "Nowak",
                 "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
 
@@ -20,7 +22,7 @@ public class EmployeeRatingServiceTest {
     }
     @Test
     void shouldAddMultipleRatingsForEmployee() {
-        ratingService employeeRatingService = new EmployeeRatingService();
+        EmployeeRatingService ratingService = new EmployeeRatingService();
         Employee employee = new Employee("Anna", "Nowak",
                 "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
 
