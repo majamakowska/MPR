@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.model.Employee;
 import org.example.model.Position;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,9 +15,16 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.*;
 
 public class EmployeeRatingServiceTest {
+
+    EmployeeRatingService ratingService;
+
+    @BeforeEach
+    void setUp() {
+        ratingService = new EmployeeRatingService();
+    }
+
     @Test
     void shouldAddRatingForEmployee() {
-        EmployeeRatingService ratingService = new EmployeeRatingService();
         Employee employee = new Employee("Anna", "Nowak",
                 "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
 
@@ -27,7 +35,6 @@ public class EmployeeRatingServiceTest {
     }
     @Test
     void shouldAddMultipleRatingsForEmployee() {
-        EmployeeRatingService ratingService = new EmployeeRatingService();
         Employee employee = new Employee("Anna", "Nowak",
                 "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
 
@@ -42,7 +49,6 @@ public class EmployeeRatingServiceTest {
     @ParameterizedTest
     @ValueSource(ints = {0, 6, 10, -1})
     void shouldThrowExceptionForInvalidRating(int invalidRating) {
-        EmployeeRatingService ratingService = new EmployeeRatingService();
         Employee employee = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
 
         assertThatThrownBy(() -> ratingService.addRating(employee, invalidRating))
@@ -52,7 +58,6 @@ public class EmployeeRatingServiceTest {
 
     @Test
     void shouldReturnEmptyListWhenNoRatings() {
-        EmployeeRatingService ratingService = new EmployeeRatingService();
         Employee employee = new Employee("Anna", "Nowak",
                 "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
 
@@ -64,7 +69,6 @@ public class EmployeeRatingServiceTest {
     @ParameterizedTest(name = "ratings={0} => expectedAvg={1}")
     @MethodSource("ratingData")
     void shouldCalculateAverageRating(List<Integer> ratings, double expectedAvg) {
-        EmployeeRatingService ratingService = new EmployeeRatingService();
         Employee employee = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
 
         ratings.forEach(r -> ratingService.addRating(employee, r));
@@ -84,7 +88,6 @@ public class EmployeeRatingServiceTest {
 
     @Test
     void shouldReturnEmployeesWithHighestAverage() {
-        EmployeeRatingService ratingService = new EmployeeRatingService();
         Employee employee1 = new Employee("Anna", "Nowak",
                 "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
         Employee employee2 = new Employee("Józef", "K",
@@ -103,7 +106,6 @@ public class EmployeeRatingServiceTest {
 
     @Test
     void shouldReturnZeroAverageWhenNoRatings() {
-        EmployeeRatingService ratingService = new EmployeeRatingService();
         Employee employee = new Employee("Anna", "Nowak",
                 "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
 
@@ -114,8 +116,6 @@ public class EmployeeRatingServiceTest {
 
     @Test
     void shouldReturnEmptyListWhenNoEmployees() {
-        EmployeeRatingService ratingService = new EmployeeRatingService();
-
         List<Employee> best = ratingService.getBestEmployees();
 
         assertThat(best).isEmpty();
@@ -123,7 +123,6 @@ public class EmployeeRatingServiceTest {
 
     @Test
     void shouldReturnAllEmployeesWithSameHighestAverage() {
-        EmployeeRatingService ratingService = new EmployeeRatingService();
         Employee employee1 = new Employee("Anna", "Nowak",
                 "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
         Employee employee2 = new Employee("Piotr", "Kowal",
@@ -148,16 +147,15 @@ public class EmployeeRatingServiceTest {
 
     @Test
     void shouldNotMixRatingsBetweenEmployees() {
-        EmployeeRatingService service = new EmployeeRatingService();
         Employee employee1 = new Employee("Anna", "Nowak",
                 "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
         Employee employee2 = new Employee("Piotr", "Kowal",
                 "piotr.nowak@test.com", "Firma X", Position.PROGRAMISTA);
 
-        service.addRating(employee1, 3);
-        service.addRating(employee2, 5);
+        ratingService.addRating(employee1, 3);
+        ratingService.addRating(employee2, 5);
 
-        assertThat(service.getRatings(employee1)).containsExactly(3);
-        assertThat(service.getRatings(employee2)).containsExactly(5);
+        assertThat(ratingService.getRatings(employee1)).containsExactly(3);
+        assertThat(ratingService.getRatings(employee2)).containsExactly(5);
     }
 }
