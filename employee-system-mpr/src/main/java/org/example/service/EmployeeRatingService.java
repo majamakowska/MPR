@@ -12,6 +12,9 @@ public class EmployeeRatingService {
     private final Map<Employee, List<Integer>> employeeRatings = new HashMap<>();
 
     public void addRating(Employee employee, int rating) {
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Ocena musi być w przedziale 1-5");
+        }
         if (!employeeRatings.containsKey(employee)) {
             employeeRatings.put(employee, new ArrayList<>());
         }
