@@ -19,7 +19,8 @@ public class CareerHistoryServiceTest {
     void shouldCalculateYearsWorkedForRegularDates(LocalDate hireDate, int expectedYearsWorked) {
         CareerHistoryService careerService = new CareerHistoryService();
         Employee employee = new Employee("Anna", "Nowak",
-                "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA, hireDate);
+                "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        employee.setHireDate(hireDate);
 
         int yearsWorked = careerService.calculateYearsWorked(employee);
 
@@ -30,6 +31,7 @@ public class CareerHistoryServiceTest {
         return Stream.of(
                 new Object[]{now.minusYears(5), 5},
                 new Object[]{now.minusYears(10).minusDays(1), 10},
+                new Object[]{now.minusYears(10).plusDays(1), 9},
                 new Object[]{now, 0}
         );
     }
@@ -38,9 +40,12 @@ public class CareerHistoryServiceTest {
     void shouldFindEmployeesWithFullYearsOfService() {
         CareerHistoryService careerService = new CareerHistoryService();
 
-        Employee employee1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA, LocalDate.now().minusYears(5));
-        Employee employee2 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma Y", Position.MANAGER, LocalDate.now().minusYears(3));
-        Employee employee3 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma Z", Position.MANAGER, LocalDate.now().minusYears(10));
+        Employee employee1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        employee1.setHireDate(LocalDate.now().minusYears(5));
+        Employee employee2 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma Y", Position.MANAGER);
+        employee2 .setHireDate(LocalDate.now().minusYears(3));
+        Employee employee3 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma Z", Position.MANAGER);
+        employee3.setHireDate(LocalDate.now().minusYears(10));
 
         careerService.addEmployee(employee1);
         careerService.addEmployee(employee2);
@@ -56,9 +61,12 @@ public class CareerHistoryServiceTest {
     void shouldFilterEmployeesByYearsWorked() {
         CareerHistoryService careerService = new CareerHistoryService();
 
-        Employee employee1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA, LocalDate.now().minusYears(5));
-        Employee employee2 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma Y", Position.MANAGER, LocalDate.now().minusYears(3));
-        Employee employee3 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma Z", Position.MANAGER, LocalDate.now().minusYears(10));
+        Employee employee1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        employee1.setHireDate(LocalDate.now().minusYears(5));
+        Employee employee2 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma Y", Position.MANAGER);
+        employee2 .setHireDate(LocalDate.now().minusYears(3));
+        Employee employee3 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma Z", Position.MANAGER);
+        employee3.setHireDate(LocalDate.now().minusYears(10));
 
         careerService.addEmployee(employee1);
         careerService.addEmployee(employee2);

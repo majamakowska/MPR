@@ -1,5 +1,6 @@
 package org.example.model;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Employee {
@@ -9,6 +10,7 @@ public class Employee {
     private String companyName;
     private Position position;
     private double salary;
+    private LocalDate hireDate;
 
     public Employee(String firstName, String lastName, String email, String companyName, Position position, double salary) {
         if (salary < 0) {
@@ -61,12 +63,20 @@ public class Employee {
         return salary;
     }
 
+    public LocalDate getHireDate() {
+        return hireDate;
+    }
+
     public void setPosition(Position position) {
         this.position =  position;
     }
 
     public void setSalary(double salary) {
         this.salary = salary;
+    }
+
+    public void setHireDate(LocalDate hireDate) {
+        this.hireDate = hireDate;
     }
 
     @Override
