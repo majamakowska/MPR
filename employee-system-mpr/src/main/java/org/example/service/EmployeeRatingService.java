@@ -27,6 +27,9 @@ public class EmployeeRatingService {
 
     public double getAverageRating(Employee employee) {
         List<Integer> ratings = employeeRatings.get(employee);
+        if (ratings == null || ratings.isEmpty()) {
+            return 0.0;
+        }
         double sum = ratings.stream().mapToDouble(Integer::doubleValue).sum();
         return sum/ratings.size();
     }

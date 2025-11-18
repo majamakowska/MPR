@@ -101,4 +101,64 @@ public class EmployeeRatingServiceTest {
         assertThat(bestEmployees)
                 .containsExactly(employee2);
     }
+
+    @Test
+    void shouldReturnZeroAverageWhenNoRatings() {
+        EmployeeRatingService ratingService = new EmployeeRatingService();
+        Employee employee = new Employee("Anna", "Nowak",
+                "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+
+        double avg = ratingService.getAverageRating(employee);
+
+        assertThat(avg).isEqualTo(0.0);
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenNoEmployees() {
+        EmployeeRatingService ratingService = new EmployeeRatingService();
+
+        List<Employee> best = ratingService.getBestEmployees();
+
+        assertThat(best).isEmpty();
+    }
+
+    @Test
+    void shouldReturnAllEmployeesWithSameHighestAverage() {
+        EmployeeRatingService ratingService = new EmployeeRatingService();
+        Employee employee1 = new Employee("Anna", "Nowak",
+                "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee employee2 = new Employee("Piotr", "Kowal",
+                "piotr.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee employee3 = new Employee("Jan", "Dudek",
+                "jan.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+
+        ratingService.addRating(employee1, 5);
+        ratingService.addRating(employee1, 4);
+
+        ratingService.addRating(employee2, 4);
+        ratingService.addRating(employee2, 5);
+
+        ratingService.addRating(employee3, 3);
+        ratingService.addRating(employee3, 5);
+
+        List<Employee> bestEmployees = ratingService.getBestEmployees();
+
+        assertThat(bestEmployees).containsExactlyInAnyOrder(employee1, employee2)
+                .doesNotContain(employee3);
+    }
+
+    @Test
+    void shouldNotMixRatingsBetweenEmployees() {
+        EmployeeRatingService service = new EmployeeRatingService();
+        Employee employee1 = new Employee("Anna", "Nowak",
+                "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee employee2 = new Employee("Piotr", "Kowal",
+                "piotr.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+
+        service.addRating(employee1, 3);
+        service.addRating(employee2, 5);
+
+        assertThat(service.getRatings(employee1)).containsExactly(3);
+        assertThat(service.getRatings(employee2)).containsExactly(5);
+    }
 }
