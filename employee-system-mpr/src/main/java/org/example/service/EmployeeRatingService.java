@@ -24,4 +24,26 @@ public class EmployeeRatingService {
     public List<Integer> getRatings(Employee employee) {
         return new ArrayList<>(employeeRatings.getOrDefault(employee, new ArrayList<>()));
     }
+
+    public double getAverageRating(Employee employee) {
+        List<Integer> ratings = employeeRatings.get(employee);
+        double sum = ratings.stream().mapToDouble(Integer::doubleValue).sum();
+        return sum/ratings.size();
+    }
+
+    public List<Employee> getBestEmployees() {
+        Map<Employee, Double> employeeAverages = new HashMap<>();
+        employeeRatings.forEach((employee, rates) ->
+                employeeAverages.put(employee, getAverageRating(employee)));
+
+        double maxAverage = employeeAverages.values().stream()
+                .mapToDouble(Double::doubleValue)
+                .max()
+                .orElse(0.0);
+
+        return employeeAverages.entrySet().stream()
+                .filter(e -> e.getValue() == maxAverage)
+                .map(Map.Entry::getKey)
+                .toList();
+    }
 }

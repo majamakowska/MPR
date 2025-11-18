@@ -96,9 +96,9 @@ public class EmployeeRatingServiceTest {
         ratingService.addRating(employee2, 5);
         ratingService.addRating(employee2, 5);
 
-        List<Employee> topPerformers = ratingService.getBestEmployee();
+        List<Employee> bestEmployees = ratingService.getBestEmployees();
 
-        assertThat(topPerformers)
+        assertThat(bestEmployees)
                 .containsExactly(employee2);
     }
 }
