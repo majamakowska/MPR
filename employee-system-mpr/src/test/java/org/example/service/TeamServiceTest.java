@@ -48,13 +48,41 @@ public class TeamServiceTest {
     }
 
     @ParameterizedTest(name = "teamMembers={0} => isValid={1}")
+    @MethodSource("validTeamCompositionData")
+    void shouldCreataValidTeam(List<Employee> teamMembers) {
+        TeamService teamService = new TeamService();
+
+        teamService.createTeam("Team A",  teamMembers);
+
+        List<Employee> createdTeamMembers = teamService.getTeamMembers("Team A");
+        assertThat(createdTeamMembers).containsExactlyInAnyOrderElementsOf(teamMembers);
+    }
+    static Stream<Object[]> validTeamCompositionData() {
+        Employee intern = new Employee("Krzysztof", "Nowicki", "krzysztof.nowicki@test.com", "Firma X", Position.STAZYSTA);
+        Employee developer1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer2 = new Employee("Barbara", "Sosna", "barbara.sosna@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer3 = new Employee("Zuzanna", "Sobota", "zuzanna.sobota@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer4 = new Employee("Tomasz", "Problem", "tomasz.problem@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee manager1 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+        Employee manager2 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma X", Position.MANAGER);
+
+        return Stream.of(
+                new Object[]{List.of(developer1, developer2, manager1)},
+                new Object[]{List.of(developer1, developer2, manager1, intern)},
+                new Object[]{List.of(developer1, developer2, developer3, developer4, manager1)},
+                new Object[]{List.of(developer1, developer2, developer3, manager1, manager2)},
+                new Object[]{List.of(developer1, developer2, intern, manager1, manager2)}
+        );
+    }
+
+    @ParameterizedTest(name = "teamMembers={0} => isValid={1}")
     @MethodSource("invalidTeamCompositionData")
     void shouldThrowExceptionForInvalidTeamComposition(List<Employee> teamMembers) {
         TeamService teamService = new TeamService();
 
         assertThatThrownBy(() -> teamService.createTeam("Team A", teamMembers))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Za duży rozmiar zespołu");
+                .hasMessageContaining("Niepoprawny skład zespołu");
     }
     static Stream<Object[]> invalidTeamCompositionData() {
         Employee intern = new Employee("Krzysztof", "Nowicki", "krzysztof.nowicki@test.com","Firma X", Position.STAZYSTA);
