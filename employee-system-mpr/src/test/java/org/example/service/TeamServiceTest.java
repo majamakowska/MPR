@@ -120,4 +120,35 @@ public class TeamServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Za duży rozmiar zespołu");
     }
+
+    @Test
+    void shouldRemoveEmployeeFromTeam() {
+        TeamService teamService = new TeamService();
+        Employee developer1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer2 = new Employee("Barbara", "Sosna", "barbara.sosna@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee manager = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+
+        teamService.createTeam("Team A", List.of(developer1, developer2, manager));
+
+        teamService.removeFromTeam("Team A", developer1);
+
+        assertThat(teamService.getTeamMembers("Team A"))
+                .containsExactly(manager);
+    }
+
+    @Test
+    void shouldAddEmployeeToTeam() {
+        TeamService teamService = new TeamService();
+
+        Employee developer1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee manager = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+        Employee developer2 = new Employee("Barbara", "Sosna", "barbara.sosna@test.com", "Firma X", Position.PROGRAMISTA);
+
+        teamService.createTeam("Team A", List.of(developer1, manager));
+
+        teamService.addToTeam("Team A", developer2);
+
+        assertThat(teamService.getTeamMembers("Team A"))
+                .containsExactlyInAnyOrder(developer1, manager, developer2);
+    }
 }
