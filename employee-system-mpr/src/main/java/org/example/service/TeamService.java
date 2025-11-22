@@ -34,4 +34,18 @@ public class TeamService {
         if (members == null) return new ArrayList<>();
         return new ArrayList<>(members);
     }
+
+    public void removeFromTeam(String teamName, Employee employee) {
+        List<Employee> teamMembers = teams.get(teamName);
+        if (teamMembers != null) {
+            teamMembers.remove(employee);
+        }
+    }
+
+    public void addToTeam(String teamName, Employee employee) {
+        List<Employee> teamMembers = teams.get(teamName);
+        if (teamMembers != null) {
+            teamMembers.add(employee);
+        }
+    }
 }
