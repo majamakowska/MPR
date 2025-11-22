@@ -265,4 +265,55 @@ public class TeamServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Zespół nie istnieje");
     }
+
+    @Test
+    void shouldThrowWhenTransferringNonMemberEmployee() {
+        TeamService teamService = new TeamService();
+
+        Employee developer1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer2 = new Employee("Barbara", "Sosna", "barbara.sosna@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee manager1 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+        Employee manager2 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma X", Position.MANAGER);
+
+        teamService.createTeam("Team A", List.of(developer1, manager1));
+        teamService.createTeam("Team B", List.of(developer2, manager2));
+
+        assertThatThrownBy(() -> teamService.transferEmployee("Team A", "Team B", developer2))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Pracownik nie znajduje się w zespole");
+    }
+    @Test
+    void shouldThrowWhenTransferringEmployeeExceedsTargetTeamSize() {
+        TeamService teamService = new TeamService();
+
+        Employee developer1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer2 = new Employee("Barbara", "Sosna", "barbara.sosna@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer3 = new Employee("Zuzanna", "Sobota", "zuzanna.sobota@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer4 = new Employee("Tomasz", "Problem", "tomasz.problem@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee manager1 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+        Employee manager2 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma X", Position.MANAGER);
+
+        Employee sourceDev = new Employee("X", "X", "x@test.com", "Firma X", Position.PROGRAMISTA);
+
+        teamService.createTeam("Team A", List.of(developer1, manager1));
+        teamService.createTeam("Team B", List.of(developer1, developer2, developer3, developer4, manager2));
+
+        assertThatThrownBy(() -> teamService.transferEmployee("Team A", "Team B", developer1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Za duży rozmiar zespołu");
+    }
+
+    @Test
+    void shouldThrowWhenTransferringEmployeeWhoIsAlreadyInTargetTeam() {
+        TeamService teamService = new TeamService();
+        Employee developer = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);;
+        Employee manager = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+
+        teamService.createTeam("Team A", List.of(developer, manager));
+        teamService.createTeam("Team B", List.of(developer, manager));
+
+        assertThatThrownBy(() -> teamService.transferEmployee("Team A", "Team B", developer))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Pracownik jest już w zespole");
+    }
 }
