@@ -136,6 +136,28 @@ public class TeamServiceTest {
                 .containsExactlyInAnyOrder(manager,developer2);
     }
 
+    void shouldThrowWhenRemovingFromNonExistingTeam() {
+        TeamService teamService = new TeamService();
+        Employee developer = new Employee("Anna", "Nowak", "anna@test.com", "Firma X", Position.PROGRAMISTA);
+
+        assertThatThrownBy(() -> teamService.removeFromTeam("Team Nothing", developer))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Zespół nie istnieje");
+    }
+
+    void shouldThrowWhenRemovingNonTeamMemberFromTeam() {
+        TeamService teamService = new TeamService();
+        Employee developer1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer2 = new Employee("Barbara", "Sosna", "barbara.sosna@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee manager = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+
+        teamService.createTeam("Team A", List.of(developer1, manager));
+
+        assertThatThrownBy(() -> teamService.removeFromTeam("Team A", developer2))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Pracownik nie znajduje się w zespole");
+    }
+
     @Test
     void shouldAddEmployeeToTeam() {
         TeamService teamService = new TeamService();
@@ -150,5 +172,33 @@ public class TeamServiceTest {
 
         assertThat(teamService.getTeamMembers("Team A"))
                 .containsExactlyInAnyOrder(developer1, manager, developer2);
+    }
+
+    @Test
+    void shouldThrowWhenAddingToNonExistingTeam() {
+        TeamService teamService = new TeamService();
+        Employee developer = new Employee("Anna", "Nowak", "anna@test.com", "Firma X", Position.PROGRAMISTA);
+
+        assertThatThrownBy(() -> teamService.addToTeam("Team Nothing", developer))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Zespół nie istnieje");
+    }
+
+    @Test
+    void shouldThrowWhenAddingEmployeeExceedsTeamSize() {
+        TeamService teamService = new TeamService();
+
+        Employee developer1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer2 = new Employee("Barbara", "Sosna", "barbara.sosna@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer3 = new Employee("Zuzanna", "Sobota", "zuzanna.sobota@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer4 = new Employee("Tomasz", "Problem", "tomasz.problem@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee manager1 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+        Employee manager2 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma X", Position.MANAGER);
+
+        teamService.createTeam("Team A", List.of(developer1, developer2, developer3, developer4, manager1));
+
+        assertThatThrownBy(() -> teamService.addToTeam("Team A", manager2))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Za duży rozmiar zespołu");
     }
 }
