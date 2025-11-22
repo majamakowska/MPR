@@ -59,4 +59,9 @@ public class TeamService {
         }
         teamMembers.add(employee);
     }
+
+    public void transferEmployee(String fromTeam, String toTeam, Employee employee) {
+        removeFromTeam(fromTeam, employee);
+        addToTeam(toTeam, employee);
+    }
 }
