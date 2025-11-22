@@ -136,6 +136,7 @@ public class TeamServiceTest {
                 .containsExactlyInAnyOrder(manager,developer2);
     }
 
+    @Test
     void shouldThrowWhenRemovingFromNonExistingTeam() {
         TeamService teamService = new TeamService();
         Employee developer = new Employee("Anna", "Nowak", "anna@test.com", "Firma X", Position.PROGRAMISTA);
@@ -145,6 +146,7 @@ public class TeamServiceTest {
                 .hasMessageContaining("Zespół nie istnieje");
     }
 
+    @Test
     void shouldThrowWhenRemovingNonTeamMemberFromTeam() {
         TeamService teamService = new TeamService();
         Employee developer1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
@@ -200,5 +202,19 @@ public class TeamServiceTest {
         assertThatThrownBy(() -> teamService.addToTeam("Team A", manager2))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Za duży rozmiar zespołu");
+    }
+
+    @Test
+    void shouldThrowWhenAddingEmployeeAlreadyInTeam() {
+        TeamService teamService = new TeamService();
+
+        Employee developer = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee manager = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+
+        teamService.createTeam("Team A", List.of(developer, manager));
+
+        assertThatThrownBy(() -> teamService.addToTeam("Team A", developer))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Pracownik jest już w zespole");
     }
 }

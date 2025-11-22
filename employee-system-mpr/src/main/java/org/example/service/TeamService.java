@@ -37,15 +37,26 @@ public class TeamService {
 
     public void removeFromTeam(String teamName, Employee employee) {
         List<Employee> teamMembers = teams.get(teamName);
-        if (teamMembers != null) {
-            teamMembers.remove(employee);
+        if (teamMembers == null) {
+            throw new IllegalArgumentException("Zespół nie istnieje");
         }
+        if (!teamMembers.contains(employee)) {
+            throw new IllegalArgumentException("Pracownik nie znajduje się w zespole");
+        }
+        teamMembers.remove(employee);
     }
 
     public void addToTeam(String teamName, Employee employee) {
         List<Employee> teamMembers = teams.get(teamName);
-        if (teamMembers != null) {
-            teamMembers.add(employee);
+        if (teamMembers == null) {
+            throw new IllegalArgumentException("Zespół nie istnieje");
         }
+        if (teamMembers.size() >= maxTeamSize) {
+            throw new IllegalArgumentException("Za duży rozmiar zespołu");
+        }
+        if (teamMembers.contains(employee)) {
+            throw new IllegalArgumentException("Pracownik jest już w zespole");
+        }
+        teamMembers.add(employee);
     }
 }
