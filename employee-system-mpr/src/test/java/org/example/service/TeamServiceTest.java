@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.assertj.core.api.SoftAssertions;
 import org.example.model.Employee;
 import org.example.model.Position;
 import org.junit.jupiter.api.Test;
@@ -189,7 +190,6 @@ public class TeamServiceTest {
     @Test
     void shouldThrowWhenAddingEmployeeExceedsTeamSize() {
         TeamService teamService = new TeamService();
-
         Employee developer1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
         Employee developer2 = new Employee("Barbara", "Sosna", "barbara.sosna@test.com", "Firma X", Position.PROGRAMISTA);
         Employee developer3 = new Employee("Zuzanna", "Sobota", "zuzanna.sobota@test.com", "Firma X", Position.PROGRAMISTA);
@@ -207,7 +207,6 @@ public class TeamServiceTest {
     @Test
     void shouldThrowWhenAddingEmployeeAlreadyInTeam() {
         TeamService teamService = new TeamService();
-
         Employee developer = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
         Employee manager = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
 
@@ -216,5 +215,54 @@ public class TeamServiceTest {
         assertThatThrownBy(() -> teamService.addToTeam("Team A", developer))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Pracownik jest już w zespole");
+    }
+
+    @Test
+    void shouldTransferEmployeeBetweenTeams() {
+        TeamService teamService = new TeamService();
+        Employee developer1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer2 = new Employee("Barbara", "Sosna", "barbara.sosna@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee manager1 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+        Employee manager2 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma X", Position.MANAGER);
+
+        teamService.createTeam("Team A", List.of(developer1, manager1));
+        teamService.createTeam("Team B", List.of(developer2, manager2));
+
+        teamService.transferEmployee("Team A", "Team B", developer1);
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(teamService.getTeamMembers("Team A"))
+                .containsExactly(manager1);
+        softly.assertThat(teamService.getTeamMembers("Team B"))
+                .containsExactlyInAnyOrder(developer1, developer2, manager2);
+        softly.assertAll();
+    }
+
+    @Test
+    void shouldThrowWhenTransferringFromNonExistingTeam() {
+        TeamService teamService = new TeamService();
+        Employee developer1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee developer2 = new Employee("Barbara", "Sosna", "barbara.sosna@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee manager = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+
+        teamService.createTeam("Team B", List.of(developer1, manager));
+
+        assertThatThrownBy(() -> teamService.transferEmployee("Team Nothing", "Team B", developer2))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Zespół nie istnieje");
+    }
+
+    @Test
+    void shouldThrowWhenTransferringToNonExistingTeam() {
+        TeamService teamService = new TeamService();
+        Employee developer = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee manager = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+
+        teamService.createTeam("Team A", List.of(developer, manager));
+
+        assertThatThrownBy(() -> teamService.transferEmployee("Team A", "Team Nothing", developer))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Zespół nie istnieje");
     }
 }
