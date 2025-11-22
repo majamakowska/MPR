@@ -133,7 +133,7 @@ public class TeamServiceTest {
         teamService.removeFromTeam("Team A", developer1);
 
         assertThat(teamService.getTeamMembers("Team A"))
-                .containsExactly(manager);
+                .containsExactlyInAnyOrder(manager,developer2);
     }
 
     @Test
