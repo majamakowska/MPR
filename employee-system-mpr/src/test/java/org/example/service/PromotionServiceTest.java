@@ -38,7 +38,7 @@ class PromotionServiceTest {
                 "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
 
         promotionService.promote(employee, Position.MANAGER);
-        assertThat(employee.getSalary(), is(equalTo(12000.00)));
+        assertThat(employee.getSalary(), is(equalTo(12000.0)));
     }
 
     @Test
@@ -57,6 +57,21 @@ class PromotionServiceTest {
         assertThatThrownBy(() -> promotionService.promote(employee, Position.PROGRAMISTA))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Nie można awansować");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenEmployeeIsNullForPromotion() {
+        assertThatThrownBy(() -> promotionService.promote(null, Position.MANAGER))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Pracownik nie może być null");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenNewPositionIsNull() {
+        Employee employee = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        assertThatThrownBy(() -> promotionService.promote(employee, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Nowe stanowisko nie może być null");
     }
 
     @Test

@@ -22,6 +22,13 @@ public class CareerHistoryServiceTest {
         careerService = new CareerHistoryService();
     }
 
+    @Test
+    void testAddNullEmployeeThrowsException() {
+        assertThatThrownBy(() -> careerService.addEmployee(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Nie można dodać null");
+    }
+
     @ParameterizedTest(name = "hirDate={0} => expectedYearsWorked={1}")
     @MethodSource("regularDatesData")
     void shouldCalculateYearsWorkedForRegularDates(LocalDate hireDate, int expectedYearsWorked) {
@@ -134,5 +141,48 @@ public class CareerHistoryServiceTest {
 
         List<Employee> anniversaryEmployees = careerService.getEmployeesWithAnniversary();
         assertThat(anniversaryEmployees).doesNotContain(employee);
+    }
+
+    @Test
+    void shouldSortEmployeesByExperienceAscending() {
+        Employee employee1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.STAZYSTA);
+        employee1.setHireDate(LocalDate.now().minusYears(1));
+        Employee employee2 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma Y", Position.PROGRAMISTA);
+        employee2.setHireDate(LocalDate.now().minusYears(5));
+        Employee employee3 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma Z", Position.MANAGER);
+        employee3.setHireDate(LocalDate.now().minusYears(3));
+
+        careerService.addEmployee(employee1);
+        careerService.addEmployee(employee2);
+        careerService.addEmployee(employee3);
+
+        List<Employee> sorted = careerService.getEmployeesSortedByExperience();
+
+        assertThat(sorted)
+                .containsExactly(employee1, employee3, employee2)
+                .extracting(Employee::getFullName)
+                .containsExactly("Anna Nowak", "Piotr Nowak", "Jan Kowalski");
+    }
+
+    @Test
+    void shouldReturnEmployeesWithExactYearsWorked() {
+        Employee employee1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.STAZYSTA);
+        employee1.setHireDate(LocalDate.now().minusYears(2));
+        Employee employee2 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma Y", Position.PROGRAMISTA);
+        employee2.setHireDate(LocalDate.now().minusYears(3));
+        Employee employee3 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma Z", Position.MANAGER);
+        employee3.setHireDate(LocalDate.now().minusYears(3));
+
+        careerService.addEmployee(employee1);
+        careerService.addEmployee(employee2);
+        careerService.addEmployee(employee3);
+
+        List<Employee> exact3Years = careerService.getEmployeesWithExactYearsWorked(3);
+
+        assertThat(exact3Years)
+                .hasSize(2)
+                .containsExactlyInAnyOrder(employee2, employee3)
+                .extracting(Employee::getFullName)
+                .allMatch(name -> name.equals("Jan Kowalski") || name.equals("Piotr Nowak"));
     }
 }

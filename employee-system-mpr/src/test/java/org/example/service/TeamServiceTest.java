@@ -316,4 +316,53 @@ public class TeamServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Pracownik jest już w zespole");
     }
+
+    @Test
+    void shouldThrowWhenCreatingTeamWithNullMembers() {
+        TeamService teamService = new TeamService();
+
+        assertThatThrownBy(() -> teamService.createTeam("Team Null", null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Lista członków nie może być null");
+    }
+
+    @Test
+    void shouldThrowWhenAddingNullEmployeeToTeam() {
+        TeamService teamService = new TeamService();
+        Employee manager = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+        Employee developer = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+
+        teamService.createTeam("Team A", List.of(manager, developer));
+
+        assertThatThrownBy(() -> teamService.addToTeam("Team A", null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Pracownik nie może być null");
+    }
+
+    @Test
+    void shouldThrowWhenRemovingNullEmployeeFromTeam() {
+        TeamService teamService = new TeamService();
+        Employee manager = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+        Employee developer = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+
+        teamService.createTeam("Team A", List.of(manager, developer));
+
+        assertThatThrownBy(() -> teamService.removeFromTeam("Team A", null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Pracownik nie może być null");
+    }
+
+    @Test
+    void shouldThrowWhenTransferringNullEmployee() {
+        TeamService teamService = new TeamService();
+        Employee manager = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma X", Position.MANAGER);
+        Employee developer = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+
+        teamService.createTeam("Team A", List.of(manager, developer));
+        teamService.createTeam("Team B", List.of(manager, developer));
+
+        assertThatThrownBy(() -> teamService.transferEmployee("Team A", "Team B", null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Pracownik nie może być null");
+    }
 }

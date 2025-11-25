@@ -7,6 +7,12 @@ public class PromotionService {
     public PromotionService() {}
 
     public void promote(Employee employee, Position newPosition) {
+        if (employee == null) {
+            throw new IllegalArgumentException("Pracownik nie może być null");
+        }
+        if (newPosition == null) {
+            throw new IllegalArgumentException("Nowe stanowisko nie może być null");
+        }
         if (employee.getPosition() == newPosition) {
             throw new IllegalArgumentException(
                     "Pracownik już ma stanowisko " + newPosition);
@@ -25,6 +31,9 @@ public class PromotionService {
     }
 
     public void giveRaise(Employee employee, double percent) {
+        if (employee == null) {
+            throw new IllegalArgumentException("Pracownik nie może być null");
+        }
         if (percent < 0) {
             throw new IllegalArgumentException("Procent podwyżki nie może być ujemny");
         }

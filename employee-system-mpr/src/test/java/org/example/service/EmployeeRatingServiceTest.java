@@ -122,6 +122,14 @@ public class EmployeeRatingServiceTest {
     }
 
     @Test
+    void shouldReturnSingleEmployeeWithHighestRatingIfTieWithOnlyOne() {
+        Employee anna = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        ratingService.addRating(anna, 5);
+
+        assertThat(ratingService.getBestEmployees()).containsExactly(anna);
+    }
+
+    @Test
     void shouldReturnAllEmployeesWithSameHighestAverage() {
         Employee employee1 = new Employee("Anna", "Nowak",
                 "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);

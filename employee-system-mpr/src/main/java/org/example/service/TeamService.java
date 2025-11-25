@@ -14,6 +14,9 @@ public class TeamService {
     private final Map<String, List<Employee>> teams = new HashMap<>();
 
     public void createTeam(String teamName, List<Employee> members) {
+        if (members == null) {
+            throw new IllegalArgumentException("Lista członków nie może być null");
+        }
         if (members.size() > maxTeamSize) {
             throw new IllegalArgumentException("Za duży rozmiar zespołu");
         }
@@ -24,6 +27,7 @@ public class TeamService {
     }
 
     public boolean isTeamCompositionValid(List<Employee> members) {
+        if (members == null) return false;
         boolean hasManager = members.stream().anyMatch(e -> e.getPosition() == Position.MANAGER);
         boolean hasDeveloper = members.stream().anyMatch(e -> e.getPosition() == Position.PROGRAMISTA);
         return hasManager && hasDeveloper;
@@ -36,6 +40,9 @@ public class TeamService {
     }
 
     public void removeFromTeam(String teamName, Employee employee) {
+        if (employee == null) {
+            throw new IllegalArgumentException("Pracownik nie może być null");
+        }
         List<Employee> teamMembers = teams.get(teamName);
         if (teamMembers == null) {
             throw new IllegalArgumentException("Zespół nie istnieje");
@@ -47,6 +54,9 @@ public class TeamService {
     }
 
     public void addToTeam(String teamName, Employee employee) {
+        if (employee == null) {
+            throw new IllegalArgumentException("Pracownik nie może być null");
+        }
         List<Employee> teamMembers = teams.get(teamName);
         if (teamMembers == null) {
             throw new IllegalArgumentException("Zespół nie istnieje");
@@ -61,6 +71,9 @@ public class TeamService {
     }
 
     public void transferEmployee(String fromTeam, String toTeam, Employee employee) {
+        if (employee == null) {
+            throw new IllegalArgumentException("Pracownik nie może być null");
+        }
         removeFromTeam(fromTeam, employee);
         addToTeam(toTeam, employee);
     }
