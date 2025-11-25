@@ -44,9 +44,6 @@ public class CareerHistoryService {
                 sorted(Comparator.comparingInt(this::calculateYearsWorked)).toList();
     }
 
-
-
-
     public List<Employee> getEmployeesWithExactYearsWorked(int years) {
         return employees.stream()
                 .filter(e -> calculateYearsWorked(e) == years) .toList();

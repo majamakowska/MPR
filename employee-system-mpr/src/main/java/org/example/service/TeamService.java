@@ -28,9 +28,12 @@ public class TeamService {
 
     public boolean isTeamCompositionValid(List<Employee> members) {
         if (members == null) return false;
-        boolean hasManager = members.stream().anyMatch(e -> e.getPosition() == Position.MANAGER);
-        boolean hasDeveloper = members.stream().anyMatch(e -> e.getPosition() == Position.PROGRAMISTA);
-        return hasManager && hasDeveloper;
+
+        boolean hasExactlyOneManager = members.stream().filter(e -> e.getPosition() == Position.MANAGER).count() == 1;
+
+        boolean hasDeveloper = members.stream().filter(e -> e.getPosition() == Position.PROGRAMISTA).count() >= 1;
+
+        return hasExactlyOneManager && hasDeveloper;
     }
 
     public List<Employee> getTeamMembers(String teamName) {

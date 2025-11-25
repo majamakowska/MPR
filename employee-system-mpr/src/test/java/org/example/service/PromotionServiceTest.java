@@ -30,6 +30,10 @@ class PromotionServiceTest {
         promotionService.promote(employee, Position.MANAGER);
 
         assertEquals(Position.MANAGER, employee.getPosition());
+
+        assertThat(employee.getPosition()).isNotEqualTo(Position.PROGRAMISTA);
+        assertThat(employee.getPosition()).isEqualTo(Position.MANAGER);
+        assertThat(employee.getPosition()).isNotNull();
     }
 
     @Test
@@ -38,6 +42,8 @@ class PromotionServiceTest {
                 "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
 
         promotionService.promote(employee, Position.MANAGER);
+
+        assertThat(employee.getSalary()).isGreaterThan(11000.0).isLessThan(13000.0);
         assertThat(employee.getSalary(), is(equalTo(12000.0)));
     }
 

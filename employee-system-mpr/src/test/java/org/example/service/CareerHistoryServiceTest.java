@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.assertj.core.api.SoftAssertions;
 import org.example.model.Employee;
 import org.example.model.Position;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,12 @@ public class CareerHistoryServiceTest {
     void setUp() {
         careerService = new CareerHistoryService();
     }
+    
+    private static Employee createEmployee(String firstName, String lastName, Position position) {
+        return new Employee(firstName, lastName,
+                firstName.toLowerCase() + "." + lastName.toLowerCase() + "@test.com",
+                "Firma X", position);
+    }
 
     @Test
     void testAddNullEmployeeThrowsException() {
@@ -32,8 +39,7 @@ public class CareerHistoryServiceTest {
     @ParameterizedTest(name = "hirDate={0} => expectedYearsWorked={1}")
     @MethodSource("regularDatesData")
     void shouldCalculateYearsWorkedForRegularDates(LocalDate hireDate, int expectedYearsWorked) {
-        Employee employee = new Employee("Anna", "Nowak",
-                "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee employee = createEmployee("Anna", "Nowak", Position.PROGRAMISTA);
         employee.setHireDate(hireDate);
 
         int yearsWorked = careerService.calculateYearsWorked(employee);
@@ -53,7 +59,7 @@ public class CareerHistoryServiceTest {
     @ParameterizedTest(name = "hireDate={0} => expectedYearsWorked={1}")
     @MethodSource("leapYearData")
     void shouldCalculateYearsWorkedForLeapYears(LocalDate hireDate, int expectedYearsWorked) {
-        Employee employee = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee employee = createEmployee("Anna", "Nowak", Position.PROGRAMISTA);
         employee.setHireDate(hireDate);
 
         int yearsWorked = careerService.calculateYearsWorked(employee);
@@ -72,7 +78,7 @@ public class CareerHistoryServiceTest {
     @ParameterizedTest(name = "futureHireDate={0} => expectedYearsWorked={1}")
     @MethodSource("futureDateData")
     void shouldReturnZeroOrNegativeForFutureHireDates(LocalDate hireDate, int expectedYearsWorked) {
-        Employee employee = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee employee = createEmployee("Anna", "Nowak", Position.PROGRAMISTA);
         employee.setHireDate(hireDate);
 
         int yearsWorked = careerService.calculateYearsWorked(employee);
@@ -90,11 +96,11 @@ public class CareerHistoryServiceTest {
 
     @Test
     void shouldFindEmployeesWithFullYearsOfService() {
-        Employee employee1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee employee1 = createEmployee("Anna", "Nowak", Position.PROGRAMISTA);
         employee1.setHireDate(LocalDate.now().minusYears(5));
-        Employee employee2 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma Y", Position.MANAGER);
+        Employee employee2 = createEmployee("Jan", "Dudek", Position.MANAGER);
         employee2 .setHireDate(LocalDate.now().minusYears(3));
-        Employee employee3 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma Z", Position.MANAGER);
+        Employee employee3 = createEmployee("Piotr", "Kowal", Position.MANAGER);
         employee3.setHireDate(LocalDate.now().minusYears(10));
         careerService.addEmployee(employee1);
         careerService.addEmployee(employee2);
@@ -102,17 +108,20 @@ public class CareerHistoryServiceTest {
 
         List<Employee> anniversaryEmployees = careerService.getEmployeesWithAnniversary();
 
-        assertThat(anniversaryEmployees).containsExactlyInAnyOrder(employee1, employee3)
-                .doesNotContain(employee2);
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(anniversaryEmployees).isNotNull().isNotEmpty().hasSize(2);
+        softly.assertThat(anniversaryEmployees).containsExactlyInAnyOrder(employee1, employee3).doesNotContain(employee2);
+        softly.assertAll();
     }
 
     @Test
     void shouldFilterEmployeesByYearsWorked() {
-        Employee employee1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee employee1 = createEmployee("Anna", "Nowak", Position.PROGRAMISTA);
         employee1.setHireDate(LocalDate.now().minusYears(5));
-        Employee employee2 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma Y", Position.MANAGER);
+        Employee employee2 = createEmployee("Jan", "Dudek", Position.MANAGER);
         employee2 .setHireDate(LocalDate.now().minusYears(3));
-        Employee employee3 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma Z", Position.MANAGER);
+        Employee employee3 = createEmployee("Piotr", "Kowal", Position.MANAGER);
         employee3.setHireDate(LocalDate.now().minusYears(10));
         careerService.addEmployee(employee1);
         careerService.addEmployee(employee2);
@@ -120,13 +129,18 @@ public class CareerHistoryServiceTest {
 
         List<Employee> filtered = careerService.getEmployeesByYearsWorked(4, 10);
 
-        assertThat(filtered).containsExactlyInAnyOrder(employee1, employee3)
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(filtered).isNotNull().isNotEmpty().hasSize(2);
+        softly.assertThat(filtered).containsExactlyInAnyOrder(employee1, employee3)
                 .doesNotContain(employee2);
+        softly.assertAll();
+        softly.assertAll();
     }
 
     @Test
     void shouldReturnZeroWhenHireDateIsNull() {
-        Employee employee = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee employee = createEmployee("Anna", "Nowak", Position.PROGRAMISTA);
 
         int yearsWorked = careerService.calculateYearsWorked(employee);
 
@@ -135,21 +149,24 @@ public class CareerHistoryServiceTest {
 
     @Test
     void shouldNotIncludeEmployeesWithNullHireDateInAnniversary() {
-        Employee employee = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.PROGRAMISTA);
+        Employee employee = createEmployee("Anna", "Nowak", Position.PROGRAMISTA);
 
         careerService.addEmployee(employee);
 
         List<Employee> anniversaryEmployees = careerService.getEmployeesWithAnniversary();
-        assertThat(anniversaryEmployees).doesNotContain(employee);
+
+        assertThat(careerService.getEmployeesWithAnniversary())
+                .doesNotContain(employee)
+                .isEmpty();
     }
 
     @Test
     void shouldSortEmployeesByExperienceAscending() {
-        Employee employee1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.STAZYSTA);
+        Employee employee1 = createEmployee("Anna", "Nowak", Position.STAZYSTA);
         employee1.setHireDate(LocalDate.now().minusYears(1));
-        Employee employee2 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma Y", Position.PROGRAMISTA);
+        Employee employee2 = createEmployee("Jan", "Dudek", Position.PROGRAMISTA);
         employee2.setHireDate(LocalDate.now().minusYears(5));
-        Employee employee3 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma Z", Position.MANAGER);
+        Employee employee3 = createEmployee("Piotr", "Kowal", Position.MANAGER);
         employee3.setHireDate(LocalDate.now().minusYears(3));
 
         careerService.addEmployee(employee1);
@@ -158,19 +175,19 @@ public class CareerHistoryServiceTest {
 
         List<Employee> sorted = careerService.getEmployeesSortedByExperience();
 
-        assertThat(sorted)
-                .containsExactly(employee1, employee3, employee2)
-                .extracting(Employee::getFullName)
-                .containsExactly("Anna Nowak", "Piotr Nowak", "Jan Kowalski");
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(sorted).isNotNull().isNotEmpty().hasSize(3);
+        softly.assertThat(sorted).containsExactly(employee1, employee3, employee2);
+        softly.assertAll();
     }
 
     @Test
     void shouldReturnEmployeesWithExactYearsWorked() {
-        Employee employee1 = new Employee("Anna", "Nowak", "anna.nowak@test.com", "Firma X", Position.STAZYSTA);
+        Employee employee1 = createEmployee("Anna", "Nowak", Position.STAZYSTA);
         employee1.setHireDate(LocalDate.now().minusYears(2));
-        Employee employee2 = new Employee("Jan", "Kowalski", "jan.kowalski@test.com", "Firma Y", Position.PROGRAMISTA);
+        Employee employee2 = createEmployee("Jan", "Dudek", Position.PROGRAMISTA);
         employee2.setHireDate(LocalDate.now().minusYears(3));
-        Employee employee3 = new Employee("Piotr", "Nowak", "piotr.nowak@test.com", "Firma Z", Position.MANAGER);
+        Employee employee3 = createEmployee("Piotr", "Kowal", Position.MANAGER);
         employee3.setHireDate(LocalDate.now().minusYears(3));
 
         careerService.addEmployee(employee1);
@@ -179,10 +196,9 @@ public class CareerHistoryServiceTest {
 
         List<Employee> exact3Years = careerService.getEmployeesWithExactYearsWorked(3);
 
-        assertThat(exact3Years)
-                .hasSize(2)
-                .containsExactlyInAnyOrder(employee2, employee3)
-                .extracting(Employee::getFullName)
-                .allMatch(name -> name.equals("Jan Kowalski") || name.equals("Piotr Nowak"));
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(exact3Years).isNotNull().isNotEmpty().hasSize(2);
+        softly.assertThat(exact3Years).containsExactlyInAnyOrder(employee2, employee3);
+        softly.assertAll();
     }
 }
