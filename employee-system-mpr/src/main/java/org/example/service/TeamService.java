@@ -30,7 +30,6 @@ public class TeamService {
         if (members == null) return false;
 
         boolean hasExactlyOneManager = members.stream().filter(e -> e.getPosition() == Position.MANAGER).count() == 1;
-
         boolean hasDeveloper = members.stream().filter(e -> e.getPosition() == Position.PROGRAMISTA).count() >= 1;
 
         return hasExactlyOneManager && hasDeveloper;
