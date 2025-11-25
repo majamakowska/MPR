@@ -153,8 +153,6 @@ public class CareerHistoryServiceTest {
 
         careerService.addEmployee(employee);
 
-        List<Employee> anniversaryEmployees = careerService.getEmployeesWithAnniversary();
-
         assertThat(careerService.getEmployeesWithAnniversary())
                 .doesNotContain(employee)
                 .isEmpty();
