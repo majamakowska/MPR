@@ -1,7 +1,9 @@
 package org.example.model;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Employee {
     private String firstName;
@@ -11,6 +13,7 @@ public class Employee {
     private Position position;
     private double salary;
     private LocalDate hireDate;
+    private Set<String> skills;
 
     public Employee(String firstName, String lastName, String email, String companyName, Position position, double salary) {
         if (salary < 0) {
@@ -28,6 +31,7 @@ public class Employee {
                     + cannotAddMessage(firstName, lastName, email, companyName, position, salary));
         }
         this.salary = salary;
+        this.skills = new HashSet<String>();
     }
 
     public Employee(String firstName, String lastName, String email, String companyName, Position position) {
@@ -77,6 +81,14 @@ public class Employee {
 
     public void setHireDate(LocalDate hireDate) {
         this.hireDate = hireDate;
+    }
+
+    public void addSkills(Set<String> skills) {
+        if (this.skills.isEmpty()) {
+            this.skills = skills;
+        } else {
+            this.skills.addAll(skills);
+        }
     }
 
     @Override
