@@ -22,15 +22,12 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-@ImportResource("classpath:employees-beans.xml")
 public class ImportService {
     private final String csvFilePath;
     private final APIService apiService;
-    private final List<Employee> predeterminedEmployees;
 
-    public ImportService (@Value("${app.import.csv-file}") String csvFilePath, APIService apiService, @Qualifier("xmlEmployees") List<Employee> xmlEmployees) {
+    public ImportService (@Value("${app.import.csv-file}") String csvFilePath, APIService apiService) {
         this.csvFilePath = csvFilePath;
-        this.predeterminedEmployees = xmlEmployees;
         this.apiService = apiService;
     }
 
@@ -91,20 +88,6 @@ public class ImportService {
             }
         } catch (IOException e) {
             errors.add("Błąd odczytu pliku: " + e.getMessage());
-        }
-        return new ImportSummary(imported, errors);
-    }
-
-    public ImportSummary importFromXML(EmployeeService employeeService) {
-        List<String> errors = new ArrayList<>();
-        int imported = 0;
-        for (Employee pEmployee : predeterminedEmployees) {
-            try {
-                employeeService.addEmployee(pEmployee);
-                imported++;
-            } catch (Exception e) {
-                errors.add(e.getMessage());
-            }
         }
         return new ImportSummary(imported, errors);
     }

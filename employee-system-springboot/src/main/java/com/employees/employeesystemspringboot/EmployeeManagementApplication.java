@@ -15,18 +15,21 @@ import org.springframework.context.annotation.ImportResource;
 import java.util.*;
 
 @SpringBootApplication
+@ImportResource("classpath:employees-beans.xml")
 public class EmployeeManagementApplication implements CommandLineRunner {
 
-    List<Employee> predefinedEmployees;
     private final EmployeeService employeeService;
     private final ImportService importService;
+    private final List<Employee> predefinedEmployees;
 
     public EmployeeManagementApplication(
             EmployeeService employeeService,
-            ImportService importService) {
+            ImportService importService,
+            @Qualifier("xmlEmployees") List<Employee> xmlEmployees) {
 
         this.employeeService = employeeService;
         this.importService = importService;
+        this.predefinedEmployees = xmlEmployees;
     }
 
     public static void main(String[] args) {
@@ -36,9 +39,13 @@ public class EmployeeManagementApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         System.out.println("\nXML");
-        ImportSummary xmlImportSummary = importService.importFromXML(employeeService);
-
-        printImportThing(xmlImportSummary);
+        for (Employee pEmployee : predefinedEmployees) {
+            try {
+                employeeService.addEmployee(pEmployee);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
         showItWorks();
 
         employeeService.deleteAllEmployees();
