@@ -37,10 +37,6 @@ public class EmployeeService {
         return employees.stream().collect(Collectors.groupingBy(Employee::getPosition));
     }
 
-    public Map<String, List<Employee>> groupByCompany() {
-        return employees.stream().collect(Collectors.groupingBy(Employee::getCompanyName));
-    }
-
     public Map<Position, Long> countByPosition() {
         return employees.stream().collect(Collectors.groupingBy(Employee::getPosition, Collectors.counting()));
     }

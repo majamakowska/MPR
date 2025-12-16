@@ -62,11 +62,15 @@ public class Employee {
     }
 
     public void setPosition(Position position) {
-        this.position =  position;
+        this.position = ensureNotNullPosition(position);
     }
 
     public void setSalary(double salary) {
-        this.salary = salary;
+        if (salary < 0) {
+            throw new IllegalArgumentException("Pensja nie może być ujemna");
+        } else {
+            this.salary = salary;
+        }
     }
 
     @Override
