@@ -14,6 +14,7 @@ class EmployeeTest {
         Employee e2 = new Employee("Jacek", "Inny", "test@mail.com", "Firma2", Position.STAZYSTA, 3200);
 
         assertAll(
+                () -> assertEquals(e1.getEmail(), e2.getEmail()),
                 () -> assertEquals(e1, e2, "Powinny być równe bo email jest taki sam"),
                 () -> assertEquals(e1.hashCode(), e2.hashCode(), "hashCode powinien być oparty o email")
         );
