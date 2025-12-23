@@ -11,11 +11,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Profile;
 
 import java.util.*;
 
 @SpringBootApplication
 @ImportResource("classpath:employees-beans.xml")
+@Profile("!test")
 public class EmployeeManagementApplication implements CommandLineRunner {
 
     private final EmployeeService employeeService;
@@ -38,31 +40,31 @@ public class EmployeeManagementApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("\nXML");
-        for (Employee pEmployee : predefinedEmployees) {
-            try {
-                employeeService.addEmployee(pEmployee);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        showItWorks();
-
-        employeeService.deleteAllEmployees();
-
-        System.out.println("\nCSV");
-        ImportSummary csvImportSummary = importService.importFromCsv(employeeService);
-
-        printImportThing(csvImportSummary);
-        showItWorks();
-
-        employeeService.deleteAllEmployees();
-
-        System.out.println("\nAPI");
-        ImportSummary apiImportSummary = importService.importFromApi(employeeService);
-
-        printImportThing(apiImportSummary);
-        showItWorks();
+//        System.out.println("\nXML");
+//        for (Employee pEmployee : predefinedEmployees) {
+//            try {
+//                employeeService.addEmployee(pEmployee);
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//            }
+//        }
+//        showItWorks();
+//
+//        employeeService.deleteAllEmployees();
+//
+//        System.out.println("\nCSV");
+//        ImportSummary csvImportSummary = importService.importFromCsv(employeeService);
+//
+//        printImportThing(csvImportSummary);
+//        showItWorks();
+//
+//        employeeService.deleteAllEmployees();
+//
+//        System.out.println("\nAPI");
+//        ImportSummary apiImportSummary = importService.importFromApi(employeeService);
+//
+//        printImportThing(apiImportSummary);
+//        showItWorks();
     }
 
     public void showItWorks () {

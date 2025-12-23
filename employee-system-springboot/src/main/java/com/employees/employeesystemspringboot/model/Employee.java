@@ -1,5 +1,7 @@
 package com.employees.employeesystemspringboot.model;
 
+import com.employees.employeesystemspringboot.dto.EmployeeDTO;
+
 import java.util.Objects;
 
 public class Employee {
@@ -9,11 +11,13 @@ public class Employee {
     private String companyName;
     private Position position;
     private double salary;
+    private EmploymentStatus status;
 
-    public Employee(String firstName, String lastName, String email, String companyName, Position position, double salary) {
+    public Employee(String firstName, String lastName, String email, String companyName,
+                    Position position, double salary, EmploymentStatus status) {
         if (salary < 0) {
             throw new IllegalArgumentException("Pensja nie może być ujemna. "
-                    + cannotAddMessage(firstName, lastName, email, companyName, position, salary));
+                    + cannotAddMessage(firstName, lastName, email, companyName, position, salary, status));
         }
         try {
             this.firstName = capitalizeNames(validateStringData(firstName, "'imię'"));
@@ -21,11 +25,16 @@ public class Employee {
             this.email = validateStringData(email, "'email'");
             this.companyName = capitalizeNames(validateStringData(companyName, "'nazwa firmy'"));
             this.position = ensureNotNullPosition(position);
+            this.salary = salary;
+            this.status = status;
         } catch(IllegalArgumentException e) {
             throw new IllegalArgumentException(e.getMessage()
-                    + cannotAddMessage(firstName, lastName, email, companyName, position, salary));
+                    + cannotAddMessage(firstName, lastName, email, companyName, position, salary, status));
         }
-        this.salary = salary;
+    }
+
+    public Employee(String firstName, String lastName, String email, String companyName, Position position, double salary) {
+        this(firstName, lastName, email, companyName, position, salary, EmploymentStatus.ACTIVE);
     }
 
     public Employee(String firstName, String lastName, String email, String companyName, Position position) {
@@ -61,6 +70,10 @@ public class Employee {
         return salary;
     }
 
+    public EmploymentStatus getStatus() {
+        return status;
+    }
+
     public void setPosition(Position position) {
         this.position = ensureNotNullPosition(position);
     }
@@ -71,6 +84,26 @@ public class Employee {
         } else {
             this.salary = salary;
         }
+    }
+
+    public void setStatus(EmploymentStatus status) {
+        this.status = ensureNotNullStatus(status);
+    }
+
+    public EmployeeDTO toDTO() {
+        return new EmployeeDTO(
+                getFirstName(),
+                getLastName(),
+                getEmail(),
+                getCompanyName(),
+                getPosition(),
+                getSalary(),
+                getStatus()
+        );
+    }
+
+    public static Employee fromDto(EmployeeDTO dto) {
+        return new Employee(dto.firstName(), dto.lastName(), dto.email(), dto.companyName(), dto.position(), dto.salary(), dto.status());
     }
 
     @Override
@@ -88,11 +121,11 @@ public class Employee {
 
     @Override
     public String toString() {
-        return '(' + firstName + " " + lastName + ", " + email + ", " + companyName + ", " + position + ", " + salary + ')';
+        return '(' + firstName + " " + lastName + ", " + email + ", " + companyName + ", " + position + ", " + salary + ", " + status + ')';
     }
 
-    public static String toString(String firstName, String lastName, String email, String companyName, Position position, double salary) {
-        return '(' + firstName + " " + lastName + ", " + email + ", " + companyName + ", " + position + ", " + salary + ')';
+    public static String toString(String firstName, String lastName, String email, String companyName, Position position, double salary, EmploymentStatus status) {
+        return '(' + firstName + " " + lastName + ", " + email + ", " + companyName + ", " + position + ", " + salary + ", " + status + ')';
     }
 
     private String validateStringData(String toValidate, String stringName) {
@@ -125,7 +158,14 @@ public class Employee {
         return position;
     }
 
-    private String cannotAddMessage(String firstName, String lastName, String email, String companyName, Position position, double salary) {
-        return "Nie można dodać pracownika: " + Employee.toString(firstName, lastName, email, companyName, position, salary);
+    private static EmploymentStatus ensureNotNullStatus(EmploymentStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException("Status nie może być null. ");
+        }
+        return status;
+    }
+
+    private String cannotAddMessage(String firstName, String lastName, String email, String companyName, Position position, double salary, EmploymentStatus status) {
+        return "Nie można dodać pracownika: " + Employee.toString(firstName, lastName, email, companyName, position, salary, status);
     }
 }

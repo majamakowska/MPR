@@ -92,7 +92,7 @@ class EmployeeTest {
     }
 
     @Test
-    void shouldThrowWhenFiledIsNullOrEmpty() {
+    void shouldThrowWhenFieldIsNullOrEmpty() {
         assertAll(
                 () -> assertThrows(IllegalArgumentException.class, () ->
                         new Employee(null, "Kowalski", "test@mail.com", "Firma", Position.PROGRAMISTA, 8000)),
